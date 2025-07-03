@@ -17,9 +17,6 @@ public abstract class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
     private String name;
-    @Column(unique = true)
-    private String rg;
-    @Column(unique = true)
     private String email;
     private Character sex;
 
@@ -40,10 +37,9 @@ public abstract class User implements Serializable {
     public User() {
     }
 
-    public User(Integer id, String name, String rg, String email, Sex sex, Date birthdate, String password) {
+    public User(Integer id, String name, String email, Sex sex, Date birthdate, String password) {
         this.id = id;
         this.name = name;
-        this.rg = rg;
         this.email = email;
         this.sex = (sex == null)? null : sex.getCode();
         this.birthdate = birthdate;
@@ -64,14 +60,6 @@ public abstract class User implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getRg() {
-        return rg;
-    }
-
-    public void setRg(String rg) {
-        this.rg = rg;
     }
 
     public String getEmail() {
