@@ -19,7 +19,7 @@ public class TeacherDTO implements Serializable {
     private String specialNeeds;
 
     @NotNull
-    private String telephones;
+    private String telephone;
 
     @NotEmpty
     private String password;

@@ -13,7 +13,7 @@ public class Student extends User {
     }
 
     public Student(Integer id, String name, String cpf, String rg, String email, Sex sex, String specialNeeds, Date birthdate, String password) {
-        super(id, name, cpf, rg, email, sex, birthdate, password);
+        super(id, name, email, sex, birthdate, password);
         super.addRole(Role.STUDENT);
     }
 

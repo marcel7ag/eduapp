@@ -13,13 +13,18 @@ public class StudentService {
     private StudentRepository repository;
 
     public Student findById(Integer id) {
-
+        return repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Student not found with ID: " + id));
     }
 
-    public Student fromDTO(StudentDTO studentDTO) {
 
+    public Student fromDTO(StudentDTO dto) {
+        Student student = new Student();
+        student.setId(dto.getId());
+        student.setName(dto.getName());
+        student.setEmail(dto.getEmail());
+        return student;
     }
-
     public Student update(Student student) {
         Student newStudent = findById(student.getId());
         updateData(newStudent, student);
