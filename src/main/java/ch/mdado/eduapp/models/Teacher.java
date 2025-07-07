@@ -1,10 +1,13 @@
 package ch.mdado.eduapp.models;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Teacher extends User{
@@ -12,8 +15,11 @@ public class Teacher extends User{
 
     private String registration;
 
-    @OneToMany(mappedBy = "teacher")
-    private List<Class> classes;
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Class> classes = new HashSet<>();
+
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Absence> absences = new HashSet<>();
 
     public Teacher() {
     }
@@ -23,11 +29,19 @@ public class Teacher extends User{
         super.addRole(Role.TEACHER);
     }
 
-    public List<Class> getClasses() {
+    public Set<Class> getClasses() {
         return classes;
     }
 
-    public void setClasses(List<Class> classes) {
+    public void setClasses(Set<Class> classes) {
         this.classes = classes;
+    }
+
+    public Set<Absence> getAbsences() {
+        return absences;
+    }
+
+    public void setAbsences(Set<Absence> absences) {
+        this.absences = absences;
     }
 }
