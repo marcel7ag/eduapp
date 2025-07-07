@@ -4,11 +4,165 @@
     <meta charset="UTF-8">
     <title>Schüler - EduApp</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 0;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .class-group {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .class-group-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 15px 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .class-group-title {
+            color: #495057;
+            font-weight: 600;
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .class-group-stats {
+            color: #6c757d;
+            font-size: 0.85rem;
+            margin-top: 3px;
+        }
+
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+            padding: 15px;
+        }
+
+        .student-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            border-left: 4px solid #007bff;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .student-item:hover {
+            background: #e9ecef;
+            transform: translateX(3px);
+        }
+
+        .student-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .student-details {
+            font-size: 0.8rem;
+            color: #6c757d;
+            line-height: 1.3;
+        }
+
+        .student-info-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+
+        .student-info-row i {
+            width: 14px;
+            margin-right: 6px;
+            color: #6c757d;
+        }
+
+        .student-actions {
+            margin-top: 8px;
+            display: flex;
+            gap: 4px;
+        }
+
+        .action-btn {
+            padding: 2px 6px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .action-btn.primary { background: #007bff; color: white; }
+        .action-btn.success { background: #28a745; color: white; }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .stats-overview {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 8px;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #495057;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .search-filter {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .students-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
-        <a class="navbar-brand" href="/">EduApp</a>
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-graduation-cap"></i> EduApp
+        </a>
         <div class="navbar-nav ms-auto">
             <a class="nav-link" href="/absences">Absenzen</a>
             <a class="nav-link active" href="/students">Schüler</a>
@@ -18,20 +172,235 @@
     </div>
 </nav>
 
-<div class="container mt-4">
-    <h1>Schüler</h1>
-    <div class="row">
-        <div class="col-md-6 mb-3" th:each="student : ${students}">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${student.name}">Schüler Name</h5>
-                    <p class="card-text" th:text="${student.email}">Email</p>
-                    <p class="card-text" th:text="${student.telephone}">Telefon</p>
-                    <a th:href="@{/absences/student/{id}(id=${student.id})}" class="btn btn-primary btn-sm">Absenzen anzeigen</a>
+<div class="container-fluid px-4 py-3">
+    <!-- Header -->
+    <div class="page-header text-center">
+        <h1 class="display-6 mb-2">
+            <i class="fas fa-users"></i> Schüler-Übersicht
+        </h1>
+        <p class="lead opacity-75 mb-0">
+            Kompakte Darstellung aller Schüler nach Klassen
+        </p>
+    </div>
+
+    <!-- Statistiken -->
+    <div class="stats-overview">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="stat-item">
+                    <div class="stat-number text-primary" th:text="${#lists.size(students)}">0</div>
+                    <div class="stat-label">Schüler gesamt</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="stat-item">
+                    <div class="stat-number text-success">3</div>
+                    <div class="stat-label">Klassen</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Such- und Filterbereich -->
+    <div class="search-filter">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" class="form-control" id="searchInput" placeholder="Schüler suchen (Name, Email...)">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" id="filterSelect">
+                    <option value="">Alle Klassen</option>
+                    <option value="9A">Klasse 9A</option>
+                    <option value="9B">Klasse 9B</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Klasse 9A Schüler -->
+    <div class="class-group" th:if="${!#lists.isEmpty(students)}">
+        <div class="class-group-header">
+            <h3 class="class-group-title">
+                <i class="fas fa-users"></i> Klasse 9A
+            </h3>
+            <div class="class-group-stats">
+                <span th:text="${#lists.size(students) >= 15 ? 15 : #lists.size(students)}">15</span> Schüler
+            </div>
+        </div>
+        <div class="students-grid">
+            <!-- Erste 15 Schüler für Klasse 9A -->
+            <div class="student-item" th:each="student, iterStat : ${students}"
+                 th:if="${iterStat.index < 15}"
+                 th:onclick="'viewStudentDetails(' + ${student.id} + ')'">
+                <div class="student-header">
+                    <h5 class="student-name" th:text="${student.name}">Schüler Name</h5>
+                </div>
+                <div class="student-details">
+                    <div class="student-info-row">
+                        <i class="fas fa-envelope"></i>
+                        <span th:text="${student.email}">email@example.com</span>
+                    </div>
+                    <div class="student-info-row">
+                        <i class="fas fa-phone"></i>
+                        <span th:text="${student.telephone}">031-555-0000</span>
+                    </div>
+                </div>
+                <div class="student-actions">
+                    <button class="action-btn primary" th:onclick="'viewStudentDetails(' + ${student.id} + ')'">
+                        <i class="fas fa-eye"></i> Details
+                    </button>
+                    <button class="action-btn success" th:onclick="'viewAbsences(' + ${student.id} + ')'">
+                        <i class="fas fa-clipboard-list"></i> Absenzen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Klasse 9B Schüler -->
+    <div class="class-group" th:if="${#lists.size(students) > 15}">
+        <div class="class-group-header">
+            <h3 class="class-group-title">
+                <i class="fas fa-users"></i> Klasse 9B
+            </h3>
+            <div class="class-group-stats">
+                <span th:text="${#lists.size(students) - 15}">14</span> Schüler
+            </div>
+        </div>
+        <div class="students-grid">
+            <!-- Schüler 16-29 für Klasse 9B -->
+            <div class="student-item" th:each="student, iterStat : ${students}"
+                 th:if="${iterStat.index >= 15}"
+                 th:onclick="'viewStudentDetails(' + ${student.id} + ')'">
+                <div class="student-header">
+                    <h5 class="student-name" th:text="${student.name}">Schüler Name</h5>
+                </div>
+                <div class="student-details">
+                    <div class="student-info-row">
+                        <i class="fas fa-envelope"></i>
+                        <span th:text="${student.email}">email@example.com</span>
+                    </div>
+                    <div class="student-info-row">
+                        <i class="fas fa-phone"></i>
+                        <span th:text="${student.telephone}">031-555-0000</span>
+                    </div>
+                </div>
+                <div class="student-actions">
+                    <button class="action-btn primary" th:onclick="'viewStudentDetails(' + ${student.id} + ')'">
+                        <i class="fas fa-eye"></i> Details
+                    </button>
+                    <button class="action-btn success" th:onclick="'viewAbsences(' + ${student.id} + ')'">
+                        <i class="fas fa-clipboard-list"></i> Absenzen
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Student Details Modal -->
+<div class="modal fade" id="studentDetailModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Schüler Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="studentDetailContent">
+                <!-- Wird dynamisch gefüllt -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Suchfunktion
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const items = document.querySelectorAll('.student-item');
+
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(searchTerm)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        updateGroupVisibility();
+    });
+
+    // Klassen-Filter
+    document.getElementById('filterSelect').addEventListener('change', function(e) {
+        const filterValue = e.target.value;
+        const groups = document.querySelectorAll('.class-group');
+
+        if (filterValue === '') {
+            groups.forEach(group => group.style.display = 'block');
+        } else {
+            groups.forEach(group => {
+                const title = group.querySelector('.class-group-title').textContent;
+                if (title.includes(filterValue)) {
+                    group.style.display = 'block';
+                } else {
+                    group.style.display = 'none';
+                }
+            });
+        }
+    });
+
+    function updateGroupVisibility() {
+        const groups = document.querySelectorAll('.class-group');
+        groups.forEach(group => {
+            const visibleItems = group.querySelectorAll('.student-item:not([style*="display: none"])');
+            if (visibleItems.length === 0) {
+                group.style.display = 'none';
+            } else {
+                group.style.display = 'block';
+            }
+        });
+    }
+
+    // Schüler Details anzeigen
+    function viewStudentDetails(id) {
+        fetch(`/students/api/${id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(student => {
+                const content = `
+                    <div class="row">
+                        <div class="col-12">
+                            <h4>${student.name || 'Unbekannt'}</h4>
+                            <hr>
+                            <p><strong>Email:</strong> ${student.email || 'Keine Email'}</p>
+                            <p><strong>Telefon:</strong> ${student.telephone || 'Keine Telefonnummer'}</p>
+                            <p><strong>Adresse:</strong> ${student.address || 'Keine Adresse'}</p>
+                            <p><strong>Geburtsdatum:</strong> ${student.birthdate ? new Date(student.birthdate).toLocaleDateString('de-DE') : 'Unbekannt'}</p>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('studentDetailContent').innerHTML = content;
+                new bootstrap.Modal(document.getElementById('studentDetailModal')).show();
+            })
+            .catch(error => {
+                console.error('Fehler beim Laden der Schülerdaten:', error);
+                alert('Fehler beim Laden der Schüler Details: ' + error.message);
+            });
+    }
+
+    // Absenzen anzeigen
+    function viewAbsences(studentId) {
+        window.location.href = `/absences/student/${studentId}`;
+    }
+</script>
 </body>
 </html>

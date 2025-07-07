@@ -6,29 +6,192 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .class-card {
-            border-left: 4px solid #007bff;
-            transition: all 0.3s ease;
-        }
-        .class-card:hover {
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
-        }
-        .class-time {
-            color: #666;
-            font-size: 0.9em;
-        }
-        .student-count {
-            background: #e9ecef;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8em;
-        }
         .page-header {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            padding: 20px;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 0;
+            border-radius: 15px;
             margin-bottom: 30px;
+        }
+
+        .class-group {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .class-group-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 15px 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .class-group-title {
+            color: #495057;
+            font-weight: 600;
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .class-group-stats {
+            color: #6c757d;
+            font-size: 0.85rem;
+            margin-top: 3px;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+            padding: 15px;
+        }
+
+        .subject-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            border-left: 4px solid #007bff;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .subject-item:hover {
+            background: #e9ecef;
+            transform: translateX(3px);
+        }
+
+        .subject-item.math { border-left-color: #dc3545; }
+        .subject-item.deutsch { border-left-color: #28a745; }
+        .subject-item.englisch { border-left-color: #ffc107; }
+        .subject-item.geschichte { border-left-color: #6f42c1; }
+        .subject-item.biologie { border-left-color: #17a2b8; }
+        .subject-item.sport { border-left-color: #fd7e14; }
+
+        .subject-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .subject-name {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.95rem;
+        }
+
+        .subject-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        .subject-icon.math { background: #dc3545; }
+        .subject-icon.deutsch { background: #28a745; }
+        .subject-icon.englisch { background: #ffc107; }
+        .subject-icon.geschichte { background: #6f42c1; }
+        .subject-icon.biologie { background: #17a2b8; }
+        .subject-icon.sport { background: #fd7e14; }
+
+        .subject-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .subject-time {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .subject-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .teacher-name {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .room-badge {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #495057;
+        }
+
+        .student-count {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .stats-overview {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #495057;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .search-filter {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .subjects-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -47,126 +210,200 @@
     </div>
 </nav>
 
-<div class="container mt-4">
+<div class="container-fluid px-4 py-3">
     <!-- Header -->
-    <div class="page-header">
-        <h1 class="mb-0">
-            <i class="fas fa-chalkboard-teacher"></i> Klassen
+    <div class="page-header text-center">
+        <h1 class="display-6 mb-2">
+            <i class="fas fa-chalkboard-teacher"></i> Klassen-Übersicht
         </h1>
-        <p class="mb-0 mt-2">Übersicht aller Klassen und Unterrichtsstunden</p>
+        <p class="lead opacity-75 mb-0">
+            Kompakte Darstellung aller Klassen und Fächer
+        </p>
     </div>
 
     <!-- Statistiken -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h3 class="text-primary" th:text="${#lists.size(classes)}">0</h3>
-                    <small class="text-muted">Klassen gesamt</small>
+    <div class="stats-overview">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number text-primary" th:text="${#lists.size(classes)}">0</div>
+                    <div class="stat-label">Unterrichtsstunden</div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h3 class="text-success" th:text="${#lists.size(classes.?[isActive])}">0</h3>
-                    <small class="text-muted">Aktive Klassen</small>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number text-success" th:text="${#lists.size(classes.?[isActive])}">0</div>
+                    <div class="stat-label">Aktive Klassen</div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h3 class="text-info">6</h3>
-                    <small class="text-muted">Verschiedene Fächer</small>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number text-info">6</div>
+                    <div class="stat-label">Verschiedene Fächer</div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h3 class="text-warning">4</h3>
-                    <small class="text-muted">Lehrer</small>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number text-warning">4</div>
+                    <div class="stat-label">Lehrer</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Klassen-Liste -->
-    <div class="row">
-        <div th:if="${#lists.isEmpty(classes)}" class="col-12">
-            <div class="alert alert-info text-center">
-                <i class="fas fa-info-circle fa-2x mb-3"></i>
-                <h4>Keine Klassen gefunden</h4>
-                <p>Es wurden noch keine Klassen erstellt.</p>
+    <!-- Such- und Filterbereich -->
+    <div class="search-filter">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" class="form-control" id="searchInput" placeholder="Klasse, Fach oder Lehrer suchen...">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" id="filterSelect">
+                    <option value="">Alle Klassen</option>
+                    <option value="9A">Klasse 9A</option>
+                    <option value="9B">Klasse 9B</option>
+                    <option value="9AB">Klasse 9AB</option>
+                </select>
             </div>
         </div>
+    </div>
 
-        <div class="col-md-6 mb-4" th:each="class : ${classes}">
-            <div class="card class-card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <h5 class="card-title">
-                                <i class="fas fa-book"></i>
-                                <span th:text="${class.subjectName}">Fach</span>
-                            </h5>
-                            <h6 class="card-subtitle mb-2 text-muted">
-                                Klasse: <span th:text="${class.className}">9A</span>
-                            </h6>
-                        </div>
-                        <div class="text-end">
-                            <span class="badge bg-primary" th:if="${class.isActive}">Aktiv</span>
-                            <span class="badge bg-secondary" th:unless="${class.isActive}">Inaktiv</span>
-                        </div>
+    <!-- Klassen-Gruppen -->
+    <div th:if="${#lists.isEmpty(classes)}" class="empty-state">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <h4>Keine Klassen gefunden</h4>
+        <p>Es wurden noch keine Klassen erstellt.</p>
+    </div>
+
+    <!-- Klasse 9A -->
+    <div class="class-group" th:if="${!#lists.isEmpty(classes.?[className == '9A'])}">
+        <div class="class-group-header">
+            <h3 class="class-group-title">
+                <i class="fas fa-users"></i> Klasse 9A
+            </h3>
+            <div class="class-group-stats">
+                <span th:text="${#lists.size(classes.?[className == '9A'])}">0</span> Fächer •
+                <span th:text="${#lists.size(classes.?[className == '9A'][0]?.students ?: {})}">0</span> Schüler
+            </div>
+        </div>
+        <div class="subjects-grid">
+            <div class="subject-item" th:each="class : ${classes.?[className == '9A']}"
+                 th:classappend="${#strings.toLowerCase(class.subjectName)}"
+                 th:onclick="'viewClassDetails(' + ${class.id} + ')'">
+                <div class="subject-header">
+                    <div class="subject-name" th:text="${class.subjectName}">Fach</div>
+                    <div class="subject-icon" th:classappend="${#strings.toLowerCase(class.subjectName)}">
+                        <i class="fas fa-calculator" th:if="${class.subjectName == 'Mathematik'}"></i>
+                        <i class="fas fa-book" th:if="${class.subjectName == 'Deutsch'}"></i>
+                        <i class="fas fa-globe" th:if="${class.subjectName == 'Englisch'}"></i>
+                        <i class="fas fa-landmark" th:if="${class.subjectName == 'Geschichte'}"></i>
+                        <i class="fas fa-microscope" th:if="${class.subjectName == 'Biologie'}"></i>
+                        <i class="fas fa-running" th:if="${class.subjectName == 'Sport'}"></i>
                     </div>
-
-                    <div class="mt-3">
-                        <div class="row">
-                            <div class="col-6">
-                                <small class="text-muted">Lehrer:</small><br>
-                                <span th:text="${class.teacher.name}">Lehrer Name</span>
-                            </div>
-                            <div class="col-6">
-                                <small class="text-muted">Raum:</small><br>
-                                <span th:text="${class.roomNumber}">Raum</span>
-                            </div>
-                        </div>
+                </div>
+                <div class="teacher-name" th:text="${class.teacher.name}">Lehrer</div>
+                <div class="subject-details">
+                    <div class="subject-time">
+                        <i class="fas fa-clock"></i>
+                        <span th:text="${class.dayOfWeekName}">Mo</span>
+                        <span th:text="${#dates.format(class.startTime, 'HH:mm')}">08:00</span>
                     </div>
-
-                    <div class="mt-3">
-                        <div class="class-time">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span th:text="${class.dayOfWeekName}">Wochentag</span>
-                            <i class="fas fa-clock ms-2"></i>
-                            <span th:text="${#dates.format(class.startTime, 'HH:mm')}">08:00</span>
-                            -
-                            <span th:text="${#dates.format(class.endTime, 'HH:mm')}">08:45</span>
-                        </div>
+                    <div class="subject-info">
+                        <span class="room-badge" th:text="${class.roomNumber}">M101</span>
+                        <span class="student-count">
+                            <span th:text="${#lists.size(class.students)}">0</span>/<span th:text="${class.maxStudents}">25</span>
+                        </span>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <div class="mt-3 d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="student-count">
-                                <i class="fas fa-users"></i>
-                                <span th:text="${#lists.size(class.students)}">0</span>
-                                /
-                                <span th:text="${class.maxStudents}">25</span>
-                                Schüler
-                            </span>
-                        </div>
-                        <div>
-                            <button class="btn btn-sm btn-outline-primary"
-                                    th:onclick="'viewClassDetails(' + ${class.id} + ')'"
-                                    title="Details anzeigen">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <a th:href="@{/absences/api/subject/{subject}(subject=${class.subjectName})}"
-                               class="btn btn-sm btn-outline-info"
-                               title="Absenzen anzeigen">
-                                <i class="fas fa-clipboard-list"></i>
-                            </a>
-                        </div>
+    <!-- Klasse 9B -->
+    <div class="class-group" th:if="${!#lists.isEmpty(classes.?[className == '9B'])}">
+        <div class="class-group-header">
+            <h3 class="class-group-title">
+                <i class="fas fa-users"></i> Klasse 9B
+            </h3>
+            <div class="class-group-stats">
+                <span th:text="${#lists.size(classes.?[className == '9B'])}">0</span> Fächer •
+                <span th:text="${#lists.size(classes.?[className == '9B'][0]?.students ?: {})}">0</span> Schüler
+            </div>
+        </div>
+        <div class="subjects-grid">
+            <div class="subject-item" th:each="class : ${classes.?[className == '9B']}"
+                 th:classappend="${#strings.toLowerCase(class.subjectName)}"
+                 th:onclick="'viewClassDetails(' + ${class.id} + ')'">
+                <div class="subject-header">
+                    <div class="subject-name" th:text="${class.subjectName}">Fach</div>
+                    <div class="subject-icon" th:classappend="${#strings.toLowerCase(class.subjectName)}">
+                        <i class="fas fa-calculator" th:if="${class.subjectName == 'Mathematik'}"></i>
+                        <i class="fas fa-book" th:if="${class.subjectName == 'Deutsch'}"></i>
+                        <i class="fas fa-globe" th:if="${class.subjectName == 'Englisch'}"></i>
+                        <i class="fas fa-landmark" th:if="${class.subjectName == 'Geschichte'}"></i>
+                        <i class="fas fa-microscope" th:if="${class.subjectName == 'Biologie'}"></i>
+                        <i class="fas fa-running" th:if="${class.subjectName == 'Sport'}"></i>
+                    </div>
+                </div>
+                <div class="teacher-name" th:text="${class.teacher.name}">Lehrer</div>
+                <div class="subject-details">
+                    <div class="subject-time">
+                        <i class="fas fa-clock"></i>
+                        <span th:text="${class.dayOfWeekName}">Mo</span>
+                        <span th:text="${#dates.format(class.startTime, 'HH:mm')}">08:00</span>
+                    </div>
+                    <div class="subject-info">
+                        <span class="room-badge" th:text="${class.roomNumber}">B501</span>
+                        <span class="student-count">
+                            <span th:text="${#lists.size(class.students)}">0</span>/<span th:text="${class.maxStudents}">25</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Klasse 9AB (Gemischte Klassen) -->
+    <div class="class-group" th:if="${!#lists.isEmpty(classes.?[className == '9AB'])}">
+        <div class="class-group-header">
+            <h3 class="class-group-title">
+                <i class="fas fa-users"></i> Klasse 9AB (Gemischt)
+            </h3>
+            <div class="class-group-stats">
+                <span th:text="${#lists.size(classes.?[className == '9AB'])}">0</span> Fächer •
+                <span th:text="${#lists.size(classes.?[className == '9AB'][0]?.students ?: {})}">0</span> Schüler
+            </div>
+        </div>
+        <div class="subjects-grid">
+            <div class="subject-item" th:each="class : ${classes.?[className == '9AB']}"
+                 th:classappend="${#strings.toLowerCase(class.subjectName)}"
+                 th:onclick="'viewClassDetails(' + ${class.id} + ')'">
+                <div class="subject-header">
+                    <div class="subject-name" th:text="${class.subjectName}">Fach</div>
+                    <div class="subject-icon" th:classappend="${#strings.toLowerCase(class.subjectName)}">
+                        <i class="fas fa-calculator" th:if="${class.subjectName == 'Mathematik'}"></i>
+                        <i class="fas fa-book" th:if="${class.subjectName == 'Deutsch'}"></i>
+                        <i class="fas fa-globe" th:if="${class.subjectName == 'Englisch'}"></i>
+                        <i class="fas fa-landmark" th:if="${class.subjectName == 'Geschichte'}"></i>
+                        <i class="fas fa-microscope" th:if="${class.subjectName == 'Biologie'}"></i>
+                        <i class="fas fa-running" th:if="${class.subjectName == 'Sport'}"></i>
+                    </div>
+                </div>
+                <div class="teacher-name" th:text="${class.teacher.name}">Lehrer</div>
+                <div class="subject-details">
+                    <div class="subject-time">
+                        <i class="fas fa-clock"></i>
+                        <span th:text="${class.dayOfWeekName}">Mo</span>
+                        <span th:text="${#dates.format(class.startTime, 'HH:mm')}">08:00</span>
+                    </div>
+                    <div class="subject-info">
+                        <span class="room-badge" th:text="${class.roomNumber}">Turnhalle</span>
+                        <span class="student-count">
+                            <span th:text="${#lists.size(class.students)}">0</span>/<span th:text="${class.maxStudents}">25</span>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -191,6 +428,51 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // Suchfunktion
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const items = document.querySelectorAll('.subject-item');
+
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(searchTerm)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        // Leere Gruppen ausblenden
+        const groups = document.querySelectorAll('.class-group');
+        groups.forEach(group => {
+            const visibleItems = group.querySelectorAll('.subject-item:not([style*="display: none"])');
+            if (visibleItems.length === 0) {
+                group.style.display = 'none';
+            } else {
+                group.style.display = 'block';
+            }
+        });
+    });
+
+    // Filter-Funktion
+    document.getElementById('filterSelect').addEventListener('change', function(e) {
+        const filterValue = e.target.value;
+        const groups = document.querySelectorAll('.class-group');
+
+        if (filterValue === '') {
+            groups.forEach(group => group.style.display = 'block');
+        } else {
+            groups.forEach(group => {
+                const title = group.querySelector('.class-group-title').textContent;
+                if (title.includes(filterValue)) {
+                    group.style.display = 'block';
+                } else {
+                    group.style.display = 'none';
+                }
+            });
+        }
+    });
+
     // Klassen Details anzeigen
     function viewClassDetails(id) {
         fetch(`/classes/api/${id}`)
@@ -201,8 +483,6 @@
                 return response.json();
             })
             .then(classData => {
-                console.log('Class data:', classData); // Debug-Ausgabe
-
                 let studentsHtml = '';
                 if (classData.students && classData.students.length > 0) {
                     studentsHtml = classData.students.map(student => `

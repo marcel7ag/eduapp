@@ -53,43 +53,94 @@ public class DatabaseInitializer implements CommandLineRunner {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
         try {
-            // Schüler erstellen
-            Student student1 = new Student(null, "Max Mustermann", "max.mustermann@example.com",
-                    Sex.MASCULINE, sdf.parse("15/05/2008"), "password123");
-            student1.setTelephone("031-555-0101");
-            student1.setAddress("Musterstraße 1, 3000 Bern");
+            // Klasse 9A Schüler (15 Schüler)
+            Student[] students9A = {
+                    new Student(null, "Max Mustermann", "max.mustermann@example.com", Sex.MASCULINE, sdf.parse("15/05/2008"), "password123"),
+                    new Student(null, "Anna Schmidt", "anna.schmidt@example.com", Sex.FEMININE, sdf.parse("22/08/2007"), "password123"),
+                    new Student(null, "Tim Weber", "tim.weber@example.com", Sex.MASCULINE, sdf.parse("10/12/2008"), "password123"),
+                    new Student(null, "Lisa Müller", "lisa.mueller@example.com", Sex.FEMININE, sdf.parse("03/03/2007"), "password123"),
+                    new Student(null, "Jonas Keller", "jonas.keller@example.com", Sex.MASCULINE, sdf.parse("28/11/2008"), "password123"),
+                    new Student(null, "Sarah Fischer", "sarah.fischer@example.com", Sex.FEMININE, sdf.parse("17/06/2007"), "password123"),
+                    new Student(null, "David Richter", "david.richter@example.com", Sex.MASCULINE, sdf.parse("14/09/2008"), "password123"),
+                    new Student(null, "Emma Wagner", "emma.wagner@example.com", Sex.FEMININE, sdf.parse("25/04/2007"), "password123"),
+                    new Student(null, "Lukas Bauer", "lukas.bauer@example.com", Sex.MASCULINE, sdf.parse("07/01/2008"), "password123"),
+                    new Student(null, "Mia Hoffmann", "mia.hoffmann@example.com", Sex.FEMININE, sdf.parse("19/10/2007"), "password123"),
+                    new Student(null, "Felix Schneider", "felix.schneider@example.com", Sex.MASCULINE, sdf.parse("02/07/2008"), "password123"),
+                    new Student(null, "Lea Zimmermann", "lea.zimmermann@example.com", Sex.FEMININE, sdf.parse("13/12/2007"), "password123"),
+                    new Student(null, "Noah Klein", "noah.klein@example.com", Sex.MASCULINE, sdf.parse("08/05/2008"), "password123"),
+                    new Student(null, "Sophia Wolf", "sophia.wolf@example.com", Sex.FEMININE, sdf.parse("26/02/2007"), "password123"),
+                    new Student(null, "Ben Schröder", "ben.schroeder@example.com", Sex.MASCULINE, sdf.parse("11/09/2008"), "password123")
+            };
 
-            Student student2 = new Student(null, "Anna Schmidt", "anna.schmidt@example.com",
-                    Sex.FEMININE, sdf.parse("22/08/2007"), "password123");
-            student2.setTelephone("031-555-0102");
-            student2.setAddress("Schulstraße 15, 3000 Bern");
+            // Klasse 9B Schüler (14 Schüler)
+            Student[] students9B = {
+                    new Student(null, "Lara Neumann", "lara.neumann@example.com", Sex.FEMININE, sdf.parse("16/03/2008"), "password123"),
+                    new Student(null, "Paul Schwarz", "paul.schwarz@example.com", Sex.MASCULINE, sdf.parse("21/06/2007"), "password123"),
+                    new Student(null, "Hannah Braun", "hannah.braun@example.com", Sex.FEMININE, sdf.parse("04/11/2008"), "password123"),
+                    new Student(null, "Tom Krüger", "tom.krueger@example.com", Sex.MASCULINE, sdf.parse("29/08/2007"), "password123"),
+                    new Student(null, "Zoe Hartmann", "zoe.hartmann@example.com", Sex.FEMININE, sdf.parse("12/01/2008"), "password123"),
+                    new Student(null, "Jan Lange", "jan.lange@example.com", Sex.MASCULINE, sdf.parse("18/04/2008"), "password123"),
+                    new Student(null, "Nora Schmitt", "nora.schmitt@example.com", Sex.FEMININE, sdf.parse("03/10/2007"), "password123"),
+                    new Student(null, "Leon Werner", "leon.werner@example.com", Sex.MASCULINE, sdf.parse("27/12/2008"), "password123"),
+                    new Student(null, "Clara König", "clara.koenig@example.com", Sex.FEMININE, sdf.parse("14/07/2007"), "password123"),
+                    new Student(null, "Finn Krause", "finn.krause@example.com", Sex.MASCULINE, sdf.parse("09/05/2008"), "password123"),
+                    new Student(null, "Maya Berger", "maya.berger@example.com", Sex.FEMININE, sdf.parse("23/09/2007"), "password123"),
+                    new Student(null, "Nick Franke", "nick.franke@example.com", Sex.MASCULINE, sdf.parse("06/02/2008"), "password123"),
+                    new Student(null, "Ava Peters", "ava.peters@example.com", Sex.FEMININE, sdf.parse("20/11/2007"), "password123"),
+                    new Student(null, "Elias Graf", "elias.graf@example.com", Sex.MASCULINE, sdf.parse("15/06/2008"), "password123")
+            };
 
-            Student student3 = new Student(null, "Tim Weber", "tim.weber@example.com",
-                    Sex.MASCULINE, sdf.parse("10/12/2008"), "password123");
-            student3.setTelephone("031-555-0103");
-            student3.setAddress("Lernweg 8, 3000 Bern");
+            // Adressen und Telefonnummern für Klasse 9A setzen
+            String[] addresses9A = {
+                    "Musterstraße 1, 3000 Bern", "Schulstraße 15, 3000 Bern", "Lernweg 8, 3000 Bern",
+                    "Bildungsstraße 22, 3000 Bern", "Wissensplatz 5, 3000 Bern", "Lehrstraße 12, 3000 Bern",
+                    "Kirchenfeld 7, 3000 Bern", "Bollwerk 3, 3000 Bern", "Kramgasse 19, 3000 Bern",
+                    "Bundesplatz 2, 3000 Bern", "Elfenau 11, 3000 Bern", "Länggasse 25, 3000 Bern",
+                    "Wankdorf 4, 3000 Bern", "Holligen 17, 3000 Bern", "Bümpliz 9, 3000 Bern"
+            };
 
-            Student student4 = new Student(null, "Lisa Müller", "lisa.mueller@example.com",
-                    Sex.FEMININE, sdf.parse("03/03/2007"), "password123");
-            student4.setTelephone("031-555-0104");
-            student4.setAddress("Bildungsstraße 22, 3000 Bern");
+            String[] addresses9B = {
+                    "Neufeld 8, 3000 Bern", "Wittigkofen 14, 3000 Bern", "Bethlehem 6, 3000 Bern",
+                    "Köniz 21, 3000 Bern", "Ostermundigen 13, 3000 Bern", "Ittigen 5, 3000 Bern",
+                    "Muri 18, 3000 Bern", "Worb 12, 3000 Bern", "Zollikofen 7, 3000 Bern",
+                    "Bolligen 16, 3000 Bern", "Kehrsatz 3, 3000 Bern", "Oberbalm 20, 3000 Bern",
+                    "Laupen 10, 3000 Bern", "Münsingen 15, 3000 Bern"
+            };
 
-            Student student5 = new Student(null, "Jonas Keller", "jonas.keller@example.com",
-                    Sex.MASCULINE, sdf.parse("28/11/2008"), "password123");
-            student5.setTelephone("031-555-0105");
-            student5.setAddress("Wissensplatz 5, 3000 Bern");
+            // Schweizer Telefonnummern setzen
+            String[] swissNumbers9A = {
+                    "078 123 45 67", "079 234 56 78", "076 345 67 89", "077 456 78 90", "078 567 89 01",
+                    "079 678 90 12", "076 789 01 23", "077 890 12 34", "078 901 23 45", "079 012 34 56",
+                    "076 123 45 67", "077 234 56 78", "078 345 67 89", "079 456 78 90", "076 567 89 01"
+            };
 
-            Student student6 = new Student(null, "Sarah Fischer", "sarah.fischer@example.com",
-                    Sex.FEMININE, sdf.parse("17/06/2007"), "password123");
-            student6.setTelephone("031-555-0106");
-            student6.setAddress("Lehrstraße 12, 3000 Bern");
+            String[] swissNumbers9B = {
+                    "078 678 90 12", "079 789 01 23", "076 890 12 34", "077 901 23 45", "078 012 34 56",
+                    "079 123 45 67", "076 234 56 78", "077 345 67 89", "078 456 78 90", "079 567 89 01",
+                    "076 678 90 12", "077 789 01 23", "078 890 12 34", "079 901 23 45"
+            };
 
-            // Schüler speichern
-            studentRepository.saveAll(Arrays.asList(student1, student2, student3, student4, student5, student6));
+            for (int i = 0; i < students9A.length; i++) {
+                students9A[i].setTelephone(swissNumbers9A[i]);
+                students9A[i].setAddress(addresses9A[i]);
+            }
 
-            System.out.println("Created 6 test students.");
+            for (int i = 0; i < students9B.length; i++) {
+                students9B[i].setTelephone(swissNumbers9B[i]);
+                students9B[i].setAddress(addresses9B[i]);
+            }
+
+            // Alle Schüler speichern
+            studentRepository.saveAll(Arrays.asList(students9A));
+            studentRepository.saveAll(Arrays.asList(students9B));
+
+            System.out.println("Created " + (students9A.length + students9B.length) + " test students.");
+            System.out.println("- Klasse 9A: " + students9A.length + " Schüler");
+            System.out.println("- Klasse 9B: " + students9B.length + " Schüler");
+
         } catch (Exception e) {
             System.err.println("Error creating test students: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -236,39 +287,41 @@ public class DatabaseInitializer implements CommandLineRunner {
 
             System.out.println("Classes saved, now assigning students...");
 
-            // Jetzt die Schüler-Zuordnungen
-            if (students.size() >= 6) {
-                // Erste 3 Schüler zu 9A-Klassen
-                List<Student> class9AStudents = students.subList(0, 3);
-                for (Student student : class9AStudents) {
-                    math9A.addStudent(student);
-                    deutsch9A.addStudent(student);
-                    englisch9A.addStudent(student);
-                    geschichte9A.addStudent(student);
-                    System.out.println("Added student " + student.getName() + " to 9A classes");
-                }
+            // Schüler-Zuordnungen basierend auf Reihenfolge
+            // Erste 15 Schüler zu 9A-Klassen
+            List<Student> class9AStudents = students.subList(0, Math.min(15, students.size()));
+            for (Student student : class9AStudents) {
+                math9A.addStudent(student);
+                deutsch9A.addStudent(student);
+                englisch9A.addStudent(student);
+                geschichte9A.addStudent(student);
+                System.out.println("Added student " + student.getName() + " to 9A classes");
+            }
 
-                // Letzte 3 Schüler zu 9B-Klassen
-                List<Student> class9BStudents = students.subList(3, 6);
+            // Nächste 14 Schüler zu 9B-Klassen
+            int startIndex9B = Math.min(15, students.size());
+            int endIndex9B = Math.min(29, students.size());
+            if (startIndex9B < students.size()) {
+                List<Student> class9BStudents = students.subList(startIndex9B, endIndex9B);
                 for (Student student : class9BStudents) {
                     biologie9B.addStudent(student);
                     System.out.println("Added student " + student.getName() + " to 9B classes");
                 }
-
-                // Alle Schüler zu Sport
-                for (Student student : students) {
-                    sport9AB.addStudent(student);
-                    System.out.println("Added student " + student.getName() + " to Sport");
-                }
-
-                // Schüler-Zuordnungen speichern
-                studentRepository.saveAll(students);
-
-                // Klassen mit Schüler-Zuordnungen erneut speichern
-                classRepository.saveAll(allClasses);
-
-                System.out.println("Student assignments completed and saved.");
             }
+
+            // Alle Schüler zu Sport
+            for (Student student : students) {
+                sport9AB.addStudent(student);
+                System.out.println("Added student " + student.getName() + " to Sport");
+            }
+
+            // Schüler-Zuordnungen speichern
+            studentRepository.saveAll(students);
+
+            // Klassen mit Schüler-Zuordnungen erneut speichern
+            classRepository.saveAll(allClasses);
+
+            System.out.println("Student assignments completed and saved.");
 
             // Verification
             for (Class c : allClasses) {
@@ -300,17 +353,17 @@ public class DatabaseInitializer implements CommandLineRunner {
             Calendar cal = Calendar.getInstance();
 
             // Verschiedene Fächer
-            String[] subjects = {"Mathematik", "Deutsch", "Englisch", "Geschichte", "Biologie", "Chemie", "Physik", "Sport"};
+            String[] subjects = {"Mathematik", "Deutsch", "Englisch", "Geschichte", "Biologie", "Sport"};
 
-            // Absenzen der letzten 2 Wochen erstellen
-            for (int i = 0; i < 25; i++) {
+            // Absenzen der letzten 4 Wochen erstellen (mehr Daten für bessere Tests)
+            for (int i = 0; i < 60; i++) {
                 Student student = students.get(i % students.size());
                 Teacher teacher = teachers.get(i % teachers.size());
                 String subject = subjects[i % subjects.length];
 
-                // Zufälliges Datum in den letzten 14 Tagen
+                // Zufälliges Datum in den letzten 28 Tagen
                 cal.setTime(new Date());
-                cal.add(Calendar.DAY_OF_MONTH, -(int)(Math.random() * 14));
+                cal.add(Calendar.DAY_OF_MONTH, -(int)(Math.random() * 28));
                 cal.set(Calendar.HOUR_OF_DAY, 8 + (int)(Math.random() * 8)); // 8-16 Uhr
                 cal.set(Calendar.MINUTE, (int)(Math.random() * 60));
                 Date absenceDate = cal.getTime();
@@ -324,8 +377,8 @@ public class DatabaseInitializer implements CommandLineRunner {
 
                 Absence absence = new Absence(student, teacher, subject, absenceDate, absenceType, reason);
 
-                // 70% der Absenzen sind entschuldigt
-                if (Math.random() < 0.7) {
+                // 75% der Absenzen sind entschuldigt
+                if (Math.random() < 0.75) {
                     absence.setIsExcused(true);
                     absence.setExcuseDocument("Entschuldigung_" + student.getName().replace(" ", "_") + "_" + i + ".pdf");
                 }
@@ -335,22 +388,22 @@ public class DatabaseInitializer implements CommandLineRunner {
 
             // Einige Absenzen für heute erstellen
             cal.setTime(new Date());
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 8; i++) {
                 Student student = students.get(i % students.size());
                 Teacher teacher = teachers.get(i % teachers.size());
                 String subject = subjects[i % subjects.length];
 
-                cal.set(Calendar.HOUR_OF_DAY, 8 + i * 2);
+                cal.set(Calendar.HOUR_OF_DAY, 8 + i);
                 cal.set(Calendar.MINUTE, 0);
                 Date todayAbsenceDate = cal.getTime();
 
-                AbsenceType absenceType = i < 2 ? AbsenceType.LATE : AbsenceType.ABSENT;
+                AbsenceType absenceType = i < 3 ? AbsenceType.LATE : AbsenceType.ABSENT;
                 String reason = getRandomReason(absenceType);
 
                 Absence todayAbsence = new Absence(student, teacher, subject, todayAbsenceDate, absenceType, reason);
 
-                // Nur 30% der heutigen Absenzen sind entschuldigt
-                if (Math.random() < 0.3) {
+                // Nur 40% der heutigen Absenzen sind entschuldigt
+                if (Math.random() < 0.4) {
                     todayAbsence.setIsExcused(true);
                     todayAbsence.setExcuseDocument("Entschuldigung_heute_" + i + ".pdf");
                 }
@@ -358,7 +411,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                 absenceRepository.save(todayAbsence);
             }
 
-            System.out.println("Created 30 test absences (25 historical + 5 today).");
+            System.out.println("Created 68 test absences (60 historical + 8 today).");
         } catch (Exception e) {
             System.err.println("Error creating test absences: " + e.getMessage());
         }
@@ -372,7 +425,9 @@ public class DatabaseInitializer implements CommandLineRunner {
                         "Stau auf dem Schulweg",
                         "Verschlafen",
                         "Arzttermin am Morgen",
-                        "Familiäre Umstände"
+                        "Familiäre Umstände",
+                        "Bus verpasst",
+                        "Zug hatte Verspätung"
                 };
             }
             case ABSENT -> {
@@ -383,7 +438,10 @@ public class DatabaseInitializer implements CommandLineRunner {
                         "Ohne Entschuldigung",
                         "Schwänzen",
                         "Grippe",
-                        "Zahnarzttermin"
+                        "Zahnarzttermin",
+                        "Fieber",
+                        "Kopfschmerzen",
+                        "Bauchschmerzen"
                 };
             }
             case EARLY_LEAVE -> {
@@ -392,7 +450,9 @@ public class DatabaseInitializer implements CommandLineRunner {
                         "Familiäre Notlage",
                         "Übelkeit",
                         "Wichtiger Termin",
-                        "Unwohlsein"
+                        "Unwohlsein",
+                        "Zahnarzttermin",
+                        "Therapeutentermin"
                 };
             }
             case EXCUSED_ABSENCE -> {
@@ -401,7 +461,9 @@ public class DatabaseInitializer implements CommandLineRunner {
                         "Familiäre Beerdigung",
                         "Behördengang",
                         "Medizinischer Notfall",
-                        "Schüleraustausch"
+                        "Schüleraustausch",
+                        "Arzttermin mit Attest",
+                        "Familiärer Notfall"
                 };
             }
         };
