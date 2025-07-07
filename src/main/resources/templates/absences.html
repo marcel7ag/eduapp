@@ -210,6 +210,7 @@
             <i class="fas fa-graduation-cap"></i> EduApp
         </a>
         <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="/attendance">Erfassen</a>
             <a class="nav-link active" href="/absences">Absenzen</a>
             <a class="nav-link" href="/students">Schüler</a>
             <a class="nav-link" href="/teachers">Lehrer</a>
@@ -325,8 +326,7 @@
         </div>
         <div class="absences-grid">
             <div class="absence-item" th:each="absence : ${absences}"
-                 th:classappend="${absence.isExcused ? 'excused' : ''} + ' ' + ${#strings.toLowerCase(absence.absenceType.name())}"
-                 th:onclick="'viewAbsenceDetails(' + ${absence.id} + ')'">
+                 th:classappend="${absence.isExcused ? 'excused' : ''} + ' ' + ${#strings.toLowerCase(absence.absenceType.name())}">
                 <div class="absence-header">
                     <h5 class="student-name" th:text="${absence.student.name}">Schüler Name</h5>
                     <div class="absence-type"
