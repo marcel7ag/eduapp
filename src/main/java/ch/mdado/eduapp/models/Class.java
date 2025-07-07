@@ -1,6 +1,8 @@
 package ch.mdado.eduapp.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -10,6 +12,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "classes")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Class implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -23,11 +26,13 @@ public class Class implements Serializable {
     @Column(name = "subject_name", nullable = false)
     private String subjectName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "teacher_id", nullable = false)
+    @JsonIgnoreProperties({"classes", "absences", "password"})
     private Teacher teacher;
 
-    @ManyToMany(mappedBy = "classes", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "classes", fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"classes", "absences", "password"})
     private Set<Student> students = new HashSet<>();
 
     @JsonFormat(pattern = "HH:mm")
@@ -59,6 +64,7 @@ public class Class implements Serializable {
     private Date semesterEnd;
 
     @OneToMany(mappedBy = "classEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"classEntity", "student", "teacher"})
     private Set<Absence> absences = new HashSet<>();
 
     // Konstruktoren
