@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Absenzen-Kalender - EduApp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 0;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .calendar-controls {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .date-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .date-nav {
+            background: #f8f9fa;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .date-nav:hover {
+            background: #e9ecef;
+        }
+
+        .current-date {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #495057;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .class-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .class-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .class-card.active {
+            border: 2px solid #007bff;
+            transform: scale(1.02);
+        }
+
+        .class-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .class-title {
+            font-weight: 600;
+            color: #495057;
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .class-info {
+            color: #6c757d;
+            font-size: 0.8rem;
+            margin-top: 2px;
+        }
+
+        .class-body {
+            padding: 15px;
+        }
+
+        .class-time {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: #495057;
+        }
+
+        .student-count {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .attendance-panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            display: none;
+        }
+
+        .attendance-panel.active {
+            display: block;
+        }
+
+        .panel-header {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 15px 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .panel-title {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .panel-info {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 3px;
+        }
+
+        .students-list {
+            padding: 15px;
+        }
+
+        .student-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            background: #f8f9fa;
+            transition: all 0.2s ease;
+        }
+
+        .student-row:hover {
+            background: #e9ecef;
+        }
+
+        .student-row.absent {
+            background: #fff5f5;
+            border-left: 4px solid #dc3545;
+        }
+
+        .student-row.late {
+            background: #fffbf0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .student-name {
+            font-weight: 500;
+            color: #495057;
+            font-size: 0.9rem;
+        }
+
+        .student-status {
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+
+        .attendance-controls {
+            display: flex;
+            gap: 4px;
+        }
+
+        .attendance-btn {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-present {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .btn-absent {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn-late {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .btn-early {
+            background: #cce7f0;
+            color: #0c5460;
+        }
+
+        .attendance-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .attendance-btn.active {
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .quick-stats {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 8px;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #495057;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .save-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .save-panel.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .date-selector {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-graduation-cap"></i> EduApp
+        </a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="/absences">Absenzen</a>
+            <a class="nav-link" href="/students">Schüler</a>
+            <a class="nav-link" href="/teachers">Lehrer</a>
+            <a class="nav-link" href="/classes">Klassen</a>
+            <a class="nav-link active" href="/attendance">Anwesenheit</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid px-4 py-3">
+    <!-- Header -->
+    <div class="page-header text-center">
+        <h1 class="display-6 mb-2">
+            <i class="fas fa-calendar-check"></i> Anwesenheits-Kalender
+        </h1>
+        <p class="lead opacity-75 mb-0">
+            Tägliche Absenzen-Erfassung nach Fächern
+        </p>
+    </div>
+
+    <!-- Kalender-Steuerung -->
+    <div class="calendar-controls">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="date-selector">
+                    <button class="date-nav" onclick="changeDate(-1)">
+                        <i class="fas fa-chevron-left"></i> Vorheriger Tag
+                    </button>
+                    <div class="current-date" id="currentDate">
+                        Montag, 7. Januar 2025
+                    </div>
+                    <button class="date-nav" onclick="changeDate(1)">
+                        Nächster Tag <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex gap-2 justify-content-end">
+                    <button class="btn btn-outline-primary btn-sm" onclick="goToToday()">
+                        <i class="fas fa-calendar-day"></i> Heute
+                    </button>
+                    <button class="btn btn-success btn-sm" onclick="saveAllChanges()">
+                        <i class="fas fa-save"></i> Alle speichern
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tagesstatistiken -->
+    <div class="quick-stats">
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-number text-primary" id="totalClasses">6</div>
+                <div class="stat-label">Stunden heute</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number text-success" id="presentCount">0</div>
+                <div class="stat-label">Anwesend</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number text-danger" id="absentCount">0</div>
+                <div class="stat-label">Abwesend</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number text-warning" id="lateCount">0</div>
+                <div class="stat-label">Verspätet</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stundenplan für den Tag -->
+    <div class="schedule-grid" id="scheduleGrid">
+        <!-- Wird dynamisch gefüllt -->
+    </div>
+
+    <!-- Anwesenheits-Panel -->
+    <div class="attendance-panel" id="attendancePanel">
+        <div class="panel-header">
+            <h3 class="panel-title" id="panelTitle">Klasse auswählen</h3>
+            <div class="panel-info" id="panelInfo">Wählen Sie eine Unterrichtsstunde aus</div>
+        </div>
+        <div class="students-list" id="studentsList">
+            <!-- Wird dynamisch gefüllt -->
+        </div>
+    </div>
+</div>
+
+<!-- Speicher-Panel -->
+<div class="save-panel" id="savePanel">
+    <div class="d-flex align-items-center gap-2">
+        <i class="fas fa-exclamation-circle text-warning"></i>
+        <span>Ungespeicherte Änderungen</span>
+        <button class="btn btn-sm btn-success" onclick="saveAllChanges()">
+            <i class="fas fa-save"></i> Speichern
+        </button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let currentDate = new Date();
+    let selectedClass = null;
+    let attendanceData = {};
+    let hasUnsavedChanges = false;
+
+    // Demo-Daten
+    const weekDays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+    const months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+
+    const scheduleData = {
+        1: [ // Montag
+            { id: 1, subject: 'Mathematik', class: '9A', teacher: 'Frau Schmidt', time: '08:00-08:45', room: 'M101', students: 15 },
+            { id: 2, subject: 'Sport', class: '9AB', teacher: 'Herr Müller', time: '14:00-15:30', room: 'Turnhalle', students: 29 }
+        ],
+        2: [ // Dienstag
+            { id: 3, subject: 'Deutsch', class: '9A', teacher: 'Herr Müller', time: '09:00-09:45', room: 'D201', students: 15 }
+        ],
+        3: [ // Mittwoch
+            { id: 4, subject: 'Englisch', class: '9A', teacher: 'Frau Weber', time: '10:00-10:45', room: 'E301', students: 15 }
+        ],
+        4: [ // Donnerstag
+            { id: 5, subject: 'Geschichte', class: '9A', teacher: 'Herr Fischer', time: '11:00-11:45', room: 'G401', students: 15 }
+        ],
+        5: [ // Freitag
+            { id: 6, subject: 'Biologie', class: '9B', teacher: 'Frau Schmidt', time: '13:00-13:45', room: 'B501', students: 14 },
+            { id: 7, subject: 'Sport', class: '9AB', teacher: 'Herr Müller', time: '14:00-15:30', room: 'Turnhalle', students: 29 }
+        ]
+    };
+
+    const studentsData = {
+        '9A': [
+            'Max Mustermann', 'Anna Schmidt', 'Tim Weber', 'Lisa Müller', 'Jonas Keller',
+            'Sarah Fischer', 'David Richter', 'Emma Wagner', 'Lukas Bauer', 'Mia Hoffmann',
+            'Felix Schneider', 'Lea Zimmermann', 'Noah Klein', 'Sophia Wolf', 'Ben Schröder'
+        ],
+        '9B': [
+            'Lara Neumann', 'Paul Schwarz', 'Hannah Braun', 'Tom Krüger', 'Zoe Hartmann',
+            'Jan Lange', 'Nora Schmitt', 'Leon Werner', 'Clara König', 'Finn Krause',
+            'Maya Berger', 'Nick Franke', 'Ava Peters', 'Elias Graf'
+        ],
+        '9AB': [] // Wird aus 9A + 9B kombiniert
+    };
+
+    // 9AB Schüler kombinieren
+    studentsData['9AB'] = [...studentsData['9A'], ...studentsData['9B']];
+
+    function init() {
+        updateDateDisplay();
+        loadSchedule();
+        updateStats();
+    }
+
+    function updateDateDisplay() {
+        const dayName = weekDays[currentDate.getDay()];
+        const day = currentDate.getDate();
+        const month = months[currentDate.getMonth()];
+        const year = currentDate.getFullYear();
+
+        document.getElementById('currentDate').textContent = `${dayName}, ${day}. ${month} ${year}`;
+    }
+
+    function changeDate(days) {
+        currentDate.setDate(currentDate.getDate() + days);
+        updateDateDisplay();
+        loadSchedule();
+        clearSelection();
+    }
+
+    function goToToday() {
+        currentDate = new Date();
+        updateDateDisplay();
+        loadSchedule();
+        clearSelection();
+    }
+
+    function loadSchedule() {
+        const dayOfWeek = currentDate.getDay();
+        const classes = scheduleData[dayOfWeek] || [];
+
+        const grid = document.getElementById('scheduleGrid');
+        grid.innerHTML = '';
+
+        if (classes.length === 0) {
+            grid.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                    <h4>Keine Stunden heute</h4>
+                    <p class="text-muted">An diesem Tag finden keine Unterrichtsstunden statt.</p>
+                </div>
+            `;
+            return;
+        }
+
+        classes.forEach(classItem => {
+            const card = document.createElement('div');
+            card.className = 'class-card';
+            card.onclick = () => selectClass(classItem);
+            card.innerHTML = `
+                <div class="class-header">
+                    <h4 class="class-title">${classItem.subject}</h4>
+                    <div class="class-info">Klasse ${classItem.class} • ${classItem.teacher}</div>
+                </div>
+                <div class="class-body">
+                    <div class="class-time">
+                        <i class="fas fa-clock"></i>
+                        <span>${classItem.time}</span>
+                        <span class="ms-auto">${classItem.room}</span>
+                    </div>
+                    <div class="student-count">
+                        <i class="fas fa-users"></i> ${classItem.students} Schüler
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+
+        document.getElementById('totalClasses').textContent = classes.length;
+    }
+
+    function selectClass(classItem) {
+        selectedClass = classItem;
+
+        // Alle Karten deaktivieren
+        document.querySelectorAll('.class-card').forEach(card => {
+            card.classList.remove('active');
+        });
+
+        // Aktive Karte markieren
+        event.currentTarget.classList.add('active');
+
+        // Panel anzeigen
+        const panel = document.getElementById('attendancePanel');
+        panel.classList.add('active');
+
+        // Panel-Header aktualisieren
+        document.getElementById('panelTitle').textContent =
+            `${classItem.subject} - Klasse ${classItem.class}`;
+        document.getElementById('panelInfo').textContent =
+            `${classItem.time} • ${classItem.teacher} • ${classItem.room}`;
+
+        // Schülerliste laden
+        loadStudentsList(classItem);
+
+        // Zum Panel scrollen
+        panel.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function loadStudentsList(classItem) {
+        const students = studentsData[classItem.class] || [];
+        const list = document.getElementById('studentsList');
+        list.innerHTML = '';
+
+        students.forEach((student, index) => {
+            const studentId = `${classItem.id}-${index}`;
+            const currentStatus = attendanceData[studentId] || 'present';
+
+            const row = document.createElement('div');
+            row.className = `student-row ${currentStatus !== 'present' ? currentStatus : ''}`;
+            row.innerHTML = `
+                <div class="student-info">
+                    <div class="student-name">${student}</div>
+                    <div class="student-status" id="status-${studentId}">
+                        ${getStatusText(currentStatus)}
+                    </div>
+                </div>
+                <div class="attendance-controls">
+                    <button class="attendance-btn btn-present ${currentStatus === 'present' ? 'active' : ''}"
+                            onclick="setAttendance('${studentId}', 'present', '${student}')">
+                        <i class="fas fa-check"></i> Da
+                    </button>
+                    <button class="attendance-btn btn-absent ${currentStatus === 'absent' ? 'active' : ''}"
+                            onclick="setAttendance('${studentId}', 'absent', '${student}')">
+                        <i class="fas fa-times"></i> Fehlt
+                    </button>
+                    <button class="attendance-btn btn-late ${currentStatus === 'late' ? 'active' : ''}"
+                            onclick="setAttendance('${studentId}', 'late', '${student}')">
+                        <i class="fas fa-clock"></i> Spät
+                    </button>
+                    <button class="attendance-btn btn-early ${currentStatus === 'early' ? 'active' : ''}"
+                            onclick="setAttendance('${studentId}', 'early', '${student}')">
+                        <i class="fas fa-sign-out-alt"></i> Früh
+                    </button>
+                </div>
+            `;
+            list.appendChild(row);
+        });
+    }
+
+    function setAttendance(studentId, status, studentName) {
+        attendanceData[studentId] = status;
+        hasUnsavedChanges = true;
+
+        // UI aktualisieren
+        const row = document.querySelector(`#status-${studentId}`).closest('.student-row');
+        row.className = `student-row ${status !== 'present' ? status : ''}`;
+
+        // Status-Text aktualisieren
+        document.getElementById(`status-${studentId}`).textContent = getStatusText(status);
+
+        // Buttons aktualisieren
+        const buttons = row.querySelectorAll('.attendance-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        row.querySelector(`.btn-${status}`).classList.add('active');
+
+        // Statistiken aktualisieren
+        updateStats();
+
+        // Speicher-Panel anzeigen
+        document.getElementById('savePanel').classList.add('show');
+    }
+
+    function getStatusText(status) {
+        switch(status) {
+            case 'present': return 'Anwesend';
+            case 'absent': return 'Abwesend';
+            case 'late': return 'Verspätet';
+            case 'early': return 'Früh gegangen';
+            default: return 'Anwesend';
+        }
+    }
+
+    function updateStats() {
+        let present = 0, absent = 0, late = 0, early = 0;
+
+        Object.values(attendanceData).forEach(status => {
+            switch(status) {
+                case 'present': present++; break;
+                case 'absent': absent++; break;
+                case 'late': late++; break;
+                case 'early': early++; break;
+            }
+        });
+
+        document.getElementById('presentCount').textContent = present;
+        document.getElementById('absentCount').textContent = absent;
+        document.getElementById('lateCount').textContent = late + early;
+    }
+
+    function clearSelection() {
+        selectedClass = null;
+        document.querySelectorAll('.class-card').forEach(card => {
+            card.classList.remove('active');
+        });
+        document.getElementById('attendancePanel').classList.remove('active');
+    }
+
+    function saveAllChanges() {
+        // Hier würde die Speicherung an das Backend erfolgen
+        console.log('Saving attendance data:', attendanceData);
+
+        // Simulation der Speicherung
+        setTimeout(() => {
+            hasUnsavedChanges = false;
+            document.getElementById('savePanel').classList.remove('show');
+
+            // Success-Message
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-success alert-dismissible fade show position-fixed';
+            alert.style.top = '20px';
+            alert.style.right = '20px';
+            alert.style.zIndex = '9999';
+            alert.innerHTML = `
+                <i class="fas fa-check"></i> Anwesenheitsdaten erfolgreich gespeichert!
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alert);
+
+            setTimeout(() => alert.remove(), 3000);
+        }, 500);
+    }
+
+    // Warnung bei ungespeicherten Änderungen
+    window.addEventListener('beforeunload', function(e) {
+        if (hasUnsavedChanges) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
+    // Initialisierung
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
