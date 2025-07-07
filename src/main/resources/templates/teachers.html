@@ -295,9 +295,6 @@
                     <span class="subject-badge" th:if="${teacher.registration == 'T004'}">Geschichte</span>
                 </div>
                 <div class="teacher-actions">
-                    <button class="action-btn primary" th:onclick="'viewTeacherDetails(' + ${teacher.id} + ')'">
-                        <i class="fas fa-eye"></i> Details
-                    </button>
                     <button class="action-btn success" th:onclick="'viewTeacherClasses(' + ${teacher.id} + ')'">
                         <i class="fas fa-chalkboard"></i> Klassen
                     </button>

@@ -359,9 +359,6 @@
                     </span>
                 </div>
                 <div class="absence-actions">
-                    <button class="action-btn primary" th:onclick="'viewAbsenceDetails(' + ${absence.id} + ')'">
-                        <i class="fas fa-eye"></i> Details
-                    </button>
                     <button class="action-btn success" th:unless="${absence.isExcused}"
                             th:onclick="'excuseAbsence(' + ${absence.id} + ')'">
                         <i class="fas fa-check"></i> Entschuldigen
