@@ -281,6 +281,58 @@ public class DatabaseInitializer implements CommandLineRunner {
             sport9AB.setSemesterStart(semesterStart);
             sport9AB.setSemesterEnd(semesterEnd);
 
+            // Klasse 7: Italienisch 9A
+            Class italian9A = new Class();
+            italian9A.setClassName("9A");
+            italian9A.setSubjectName("Italienisch");
+            italian9A.setTeacher(teachers.get(1));
+            italian9A.setDayOfWeek(1); // Montag
+            italian9A.setStartTime(timeFormat.parse("10:00"));
+            italian9A.setEndTime(timeFormat.parse("12:00"));
+            italian9A.setRoomNumber("M132");
+            italian9A.setMaxStudents(30);
+            italian9A.setSemesterStart(semesterStart);
+            italian9A.setSemesterEnd(semesterEnd);
+
+            // Klasse 8: Italienisch 9B
+            Class italian9B = new Class();
+            italian9B.setClassName("9B");
+            italian9B.setSubjectName("Italienisch");
+            italian9B.setTeacher(teachers.get(1));
+            italian9B.setDayOfWeek(1); // Montag
+            italian9B.setStartTime(timeFormat.parse("10:00"));
+            italian9B.setEndTime(timeFormat.parse("12:00"));
+            italian9B.setRoomNumber("M133");
+            italian9B.setMaxStudents(30);
+            italian9B.setSemesterStart(semesterStart);
+            italian9B.setSemesterEnd(semesterEnd);
+
+            // Klasse 9: Russisch 9AB
+            Class russian9AB = new Class();
+            russian9AB.setClassName("9AB");
+            russian9AB.setSubjectName("Russisch");
+            russian9AB.setTeacher(teachers.get(1));
+            russian9AB.setDayOfWeek(1); // Montag
+            russian9AB.setStartTime(timeFormat.parse("14:00"));
+            russian9AB.setEndTime(timeFormat.parse("16:00"));
+            russian9AB.setRoomNumber("M235");
+            russian9AB.setMaxStudents(30);
+            russian9AB.setSemesterStart(semesterStart);
+            russian9AB.setSemesterEnd(semesterEnd);
+
+            // Klasse 9: Russisch 9AB
+            Class russian9B = new Class();
+            russian9B.setClassName("9B");
+            russian9B.setSubjectName("Russisch");
+            russian9B.setTeacher(teachers.get(1));
+            russian9B.setDayOfWeek(1); // Dienstag
+            russian9B.setStartTime(timeFormat.parse("10:00"));
+            russian9B.setEndTime(timeFormat.parse("13:00"));
+            russian9B.setRoomNumber("M235");
+            russian9B.setMaxStudents(30);
+            russian9B.setSemesterStart(semesterStart);
+            russian9B.setSemesterEnd(semesterEnd);
+
             // WICHTIG: Erst die Klassen ohne Schüler speichern
             List<Class> allClasses = Arrays.asList(math9A, deutsch9A, englisch9A, geschichte9A, biologie9B, sport9AB);
             classRepository.saveAll(allClasses);
