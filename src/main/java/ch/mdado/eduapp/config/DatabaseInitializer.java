@@ -320,12 +320,12 @@ public class DatabaseInitializer implements CommandLineRunner {
             russian9AB.setSemesterStart(semesterStart);
             russian9AB.setSemesterEnd(semesterEnd);
 
-            // Klasse 9: Russisch 9AB
+            // Klasse 10: Russisch 9AB
             Class russian9B = new Class();
             russian9B.setClassName("9B");
             russian9B.setSubjectName("Russisch");
             russian9B.setTeacher(teachers.get(1));
-            russian9B.setDayOfWeek(1); // Dienstag
+            russian9B.setDayOfWeek(2); // Dienstag
             russian9B.setStartTime(timeFormat.parse("10:00"));
             russian9B.setEndTime(timeFormat.parse("13:00"));
             russian9B.setRoomNumber("M235");
