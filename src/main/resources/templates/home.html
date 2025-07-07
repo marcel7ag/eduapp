@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduApp - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .dashboard-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        .quick-action {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .quick-action:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 60px 0;
+            border-radius: 20px;
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-graduation-cap"></i> EduApp
+        </a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="/absences">Absenzen</a>
+            <a class="nav-link" href="/students">Schüler</a>
+            <a class="nav-link" href="/teachers">Lehrer</a>
+            <a class="nav-link" href="/classes">Klassen</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <!-- Hero Section -->
+    <div class="hero-section text-center">
+        <h1 class="display-4 mb-4">
+            <i class="fas fa-school"></i>
+            Willkommen bei EduApp
+        </h1>
+        <p class="lead">
+            Einfache Verwaltung von Schülerabsenzen für Lehrer und Administratoren
+        </p>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="dashboard-card text-center">
+                <i class="fas fa-calendar-day fa-3x mb-3"></i>
+                <h3 th:text="${totalAbsencesToday}">0</h3>
+                <p>Absenzen heute</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dashboard-card text-center">
+                <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                <h3 th:text="${unexcusedAbsencesToday}">0</h3>
+                <p>Unentschuldigt heute</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dashboard-card text-center">
+                <i class="fas fa-calendar-week fa-3x mb-3"></i>
+                <h3 th:text="${totalAbsencesWeek}">0</h3>
+                <p>Diese Woche</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dashboard-card text-center">
+                <i class="fas fa-users fa-3x mb-3"></i>
+                <h3>4</h3>
+                <p>Aktive Lehrer</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-md-6">
+            <h3><i class="fas fa-bolt"></i> Schnellzugriff</h3>
+            <div class="quick-action">
+                <h5><i class="fas fa-plus text-primary"></i> Neue Absenz erfassen</h5>
+                <p>Schnell eine neue Absenz für einen Schüler eintragen</p>
+                <a href="/absences/new" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Neue Absenz
+                </a>
+            </div>
+            <div class="quick-action">
+                <h5><i class="fas fa-list text-info"></i> Heutige Absenzen</h5>
+                <p>Alle Absenzen von heute anzeigen und bearbeiten</p>
+                <a href="/absences/today" class="btn btn-info">
+                    <i class="fas fa-calendar-day"></i> Heute anzeigen
+                </a>
+            </div>
+            <div class="quick-action">
+                <h5><i class="fas fa-exclamation-circle text-warning"></i> Unentschuldigte Absenzen</h5>
+                <p>Alle unentschuldigten Absenzen verwalten</p>
+                <a href="/absences/unexcused" class="btn btn-warning">
+                    <i class="fas fa-exclamation-circle"></i> Unentschuldigt
+                </a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h3><i class="fas fa-clock"></i> Letzte Aktivitäten</h3>
+            <div class="quick-action">
+                <h5>Neueste Absenzen</h5>
+                <div th:if="${recentAbsences.size() > 0}">
+                    <div th:each="absence : ${recentAbsences}" class="border-bottom pb-2 mb-2">
+                        <small class="text-muted" th:text="${#dates.format(absence.absenceDate, 'dd.MM.yyyy HH:mm')}"></small><br>
+                        <span th:text="${absence.student.name}"></span> -
+                        <span th:text="${absence.subjectName}"></span>
+                        <span class="badge bg-secondary ms-2" th:text="${absence.absenceType.description}"></span>
+                    </div>
+                </div>
+                <div th:unless="${recentAbsences.size() > 0}">
+                    <p class="text-muted">Keine aktuellen Absenzen</p>
+                </div>
+                <a href="/absences" class="btn btn-outline-primary">
+                    <i class="fas fa-list"></i> Alle anzeigen
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-5 py-4 bg-light rounded">
+        <div class="text-center">
+            <p class="mb-0">&copy; 2025 EduApp - Schülerabsenzen-Verwaltung</p>
+            <small class="text-muted">Entwickelt für die einfache Verwaltung von Schulabsenzen</small>
+        </div>
+    </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

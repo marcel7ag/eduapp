@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Klassen - EduApp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .class-card {
+            border-left: 4px solid #007bff;
+            transition: all 0.3s ease;
+        }
+        .class-card:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .class-time {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .student-count {
+            background: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-graduation-cap"></i> EduApp
+        </a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="/absences">Absenzen</a>
+            <a class="nav-link" href="/students">Schüler</a>
+            <a class="nav-link" href="/teachers">Lehrer</a>
+            <a class="nav-link active" href="/classes">Klassen</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="page-header">
+        <h1 class="mb-0">
+            <i class="fas fa-chalkboard-teacher"></i> Klassen
+        </h1>
+        <p class="mb-0 mt-2">Übersicht aller Klassen und Unterrichtsstunden</p>
+    </div>
+
+    <!-- Statistiken -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-primary" th:text="${#lists.size(classes)}">0</h3>
+                    <small class="text-muted">Klassen gesamt</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-success" th:text="${#lists.size(classes.?[isActive])}">0</h3>
+                    <small class="text-muted">Aktive Klassen</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-info">6</h3>
+                    <small class="text-muted">Verschiedene Fächer</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-warning">4</h3>
+                    <small class="text-muted">Lehrer</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Klassen-Liste -->
+    <div class="row">
+        <div th:if="${#lists.isEmpty(classes)}" class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle fa-2x mb-3"></i>
+                <h4>Keine Klassen gefunden</h4>
+                <p>Es wurden noch keine Klassen erstellt.</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4" th:each="class : ${classes}">
+            <div class="card class-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="card-title">
+                                <i class="fas fa-book"></i>
+                                <span th:text="${class.subjectName}">Fach</span>
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                Klasse: <span th:text="${class.className}">9A</span>
+                            </h6>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-primary" th:if="${class.isActive}">Aktiv</span>
+                            <span class="badge bg-secondary" th:unless="${class.isActive}">Inaktiv</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <div class="row">
+                            <div class="col-6">
+                                <small class="text-muted">Lehrer:</small><br>
+                                <span th:text="${class.teacher.name}">Lehrer Name</span>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Raum:</small><br>
+                                <span th:text="${class.roomNumber}">Raum</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <div class="class-time">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span th:text="${class.dayOfWeekName}">Wochentag</span>
+                            <i class="fas fa-clock ms-2"></i>
+                            <span th:text="${#dates.format(class.startTime, 'HH:mm')}">08:00</span>
+                            -
+                            <span th:text="${#dates.format(class.endTime, 'HH:mm')}">08:45</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 d-flex justify-content-between align-items-center">
+                        <div>
+                                <span class="student-count">
+                                    <i class="fas fa-users"></i>
+                                    <span th:text="${#lists.size(class.students)}">0</span>
+                                    /
+                                    <span th:text="${class.maxStudents}">25</span>
+                                    Schüler
+                                </span>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary"
+                                    th:onclick="'viewClassDetails(' + ${class.id} + ')'"
+                                    title="Details anzeigen">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <a th:href="@{/absences(subject=${class.subjectName})}"
+                               class="btn btn-sm btn-outline-info"
+                               title="Absenzen anzeigen">
+                                <i class="fas fa-clipboard-list"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Class Details Modal -->
+<div class="modal fade" id="classDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Klassen Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="classDetailContent">
+                <!-- Wird dynamisch gefüllt -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Klassen Details anzeigen
+    function viewClassDetails(id) {
+        fetch(`/classes/api/${id}`)
+            .then(response => response.json())
+            .then(classData => {
+                const content = `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Klasse</h6>
+                                <p>${classData.className}</p>
+                                <h6>Fach</h6>
+                                <p>${classData.subjectName}</p>
+                                <h6>Lehrer</h6>
+                                <p>${classData.teacher.name} (${classData.teacher.email})</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Raum</h6>
+                                <p>${classData.roomNumber}</p>
+                                <h6>Zeit</h6>
+                                <p>${classData.dayOfWeekName} ${new Date(classData.startTime).toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'})} - ${new Date(classData.endTime).toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'})}</p>
+                                <h6>Kapazität</h6>
+                                <p>${classData.students.length} / ${classData.maxStudents} Schüler</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <h6>Eingeschriebene Schüler</h6>
+                                <div class="row">
+                                    ${classData.students.map(student => `
+                                        <div class="col-md-4 mb-2">
+                                            <div class="card">
+                                                <div class="card-body py-2">
+                                                    <small>
+                                                        <strong>${student.name}</strong><br>
+                                                        ${student.email}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                document.getElementById('classDetailContent').innerHTML = content;
+                new bootstrap.Modal(document.getElementById('classDetailModal')).show();
+            })
+            .catch(error => {
+                console.error('Fehler beim Laden der Klassendaten:', error);
+                alert('Fehler beim Laden der Klassen Details');
+            });
+    }
+</script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package ch.mdado.eduapp.config;
 
 import ch.mdado.eduapp.models.*;
+import ch.mdado.eduapp.models.Class;
 import ch.mdado.eduapp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -39,6 +40,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         // Testdaten erstellen
         createTestStudents();
         createTestTeachers();
+        createTestClasses();
         createTestAbsences();
 
         System.out.println("Database initialization completed.");
@@ -119,6 +121,146 @@ public class DatabaseInitializer implements CommandLineRunner {
             System.out.println("Created 4 test teachers.");
         } catch (Exception e) {
             System.err.println("Error creating test teachers: " + e.getMessage());
+        }
+    }
+
+    private void createTestClasses() {
+        try {
+            var teachers = teacherRepository.findAll();
+            var students = studentRepository.findAll();
+
+            if (teachers.isEmpty()) {
+                System.err.println("No teachers found for creating classes.");
+                return;
+            }
+
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            Calendar cal = Calendar.getInstance();
+
+            // Semester-Daten
+            cal.set(2024, Calendar.AUGUST, 1);
+            Date semesterStart = cal.getTime();
+            cal.set(2025, Calendar.JANUARY, 31);
+            Date semesterEnd = cal.getTime();
+
+            // Klasse 1: Mathematik 9A
+            Class math9A = new Class();
+            math9A.setClassName("9A");
+            math9A.setSubjectName("Mathematik");
+            math9A.setTeacher(teachers.get(0));
+            math9A.setDayOfWeek(1); // Montag
+            math9A.setStartTime(timeFormat.parse("08:00"));
+            math9A.setEndTime(timeFormat.parse("08:45"));
+            math9A.setRoomNumber("M101");
+            math9A.setMaxStudents(25);
+            math9A.setSemesterStart(semesterStart);
+            math9A.setSemesterEnd(semesterEnd);
+
+            // Klasse 2: Deutsch 9A
+            Class deutsch9A = new Class();
+            deutsch9A.setClassName("9A");
+            deutsch9A.setSubjectName("Deutsch");
+            deutsch9A.setTeacher(teachers.get(1));
+            deutsch9A.setDayOfWeek(2); // Dienstag
+            deutsch9A.setStartTime(timeFormat.parse("09:00"));
+            deutsch9A.setEndTime(timeFormat.parse("09:45"));
+            deutsch9A.setRoomNumber("D201");
+            deutsch9A.setMaxStudents(25);
+            deutsch9A.setSemesterStart(semesterStart);
+            deutsch9A.setSemesterEnd(semesterEnd);
+
+            // Klasse 3: Englisch 9A
+            Class englisch9A = new Class();
+            englisch9A.setClassName("9A");
+            englisch9A.setSubjectName("Englisch");
+            englisch9A.setTeacher(teachers.get(2));
+            englisch9A.setDayOfWeek(3); // Mittwoch
+            englisch9A.setStartTime(timeFormat.parse("10:00"));
+            englisch9A.setEndTime(timeFormat.parse("10:45"));
+            englisch9A.setRoomNumber("E301");
+            englisch9A.setMaxStudents(25);
+            englisch9A.setSemesterStart(semesterStart);
+            englisch9A.setSemesterEnd(semesterEnd);
+
+            // Klasse 4: Geschichte 9A
+            Class geschichte9A = new Class();
+            geschichte9A.setClassName("9A");
+            geschichte9A.setSubjectName("Geschichte");
+            geschichte9A.setTeacher(teachers.get(3));
+            geschichte9A.setDayOfWeek(4); // Donnerstag
+            geschichte9A.setStartTime(timeFormat.parse("11:00"));
+            geschichte9A.setEndTime(timeFormat.parse("11:45"));
+            geschichte9A.setRoomNumber("G401");
+            geschichte9A.setMaxStudents(25);
+            geschichte9A.setSemesterStart(semesterStart);
+            geschichte9A.setSemesterEnd(semesterEnd);
+
+            // Klasse 5: Biologie 9B
+            Class biologie9B = new Class();
+            biologie9B.setClassName("9B");
+            biologie9B.setSubjectName("Biologie");
+            biologie9B.setTeacher(teachers.get(0));
+            biologie9B.setDayOfWeek(5); // Freitag
+            biologie9B.setStartTime(timeFormat.parse("13:00"));
+            biologie9B.setEndTime(timeFormat.parse("13:45"));
+            biologie9B.setRoomNumber("B501");
+            biologie9B.setMaxStudents(20);
+            biologie9B.setSemesterStart(semesterStart);
+            biologie9B.setSemesterEnd(semesterEnd);
+
+            // Klasse 6: Sport 9AB
+            Class sport9AB = new Class();
+            sport9AB.setClassName("9AB");
+            sport9AB.setSubjectName("Sport");
+            sport9AB.setTeacher(teachers.get(1));
+            sport9AB.setDayOfWeek(5); // Freitag
+            sport9AB.setStartTime(timeFormat.parse("14:00"));
+            sport9AB.setEndTime(timeFormat.parse("15:30"));
+            sport9AB.setRoomNumber("Turnhalle");
+            sport9AB.setMaxStudents(30);
+            sport9AB.setSemesterStart(semesterStart);
+            sport9AB.setSemesterEnd(semesterEnd);
+
+            // Klassen speichern
+            classRepository.saveAll(Arrays.asList(math9A, deutsch9A, englisch9A, geschichte9A, biologie9B, sport9AB));
+
+            // Schüler zu Klassen zuordnen
+            if (students.size() >= 6) {
+                // Erste 3 Schüler zu 9A
+                math9A.addStudent(students.get(0));
+                math9A.addStudent(students.get(1));
+                math9A.addStudent(students.get(2));
+
+                deutsch9A.addStudent(students.get(0));
+                deutsch9A.addStudent(students.get(1));
+                deutsch9A.addStudent(students.get(2));
+
+                englisch9A.addStudent(students.get(0));
+                englisch9A.addStudent(students.get(1));
+                englisch9A.addStudent(students.get(2));
+
+                geschichte9A.addStudent(students.get(0));
+                geschichte9A.addStudent(students.get(1));
+                geschichte9A.addStudent(students.get(2));
+
+                // Letzte 3 Schüler zu 9B
+                biologie9B.addStudent(students.get(3));
+                biologie9B.addStudent(students.get(4));
+                biologie9B.addStudent(students.get(5));
+
+                // Alle Schüler zu Sport
+                for (Student student : students) {
+                    sport9AB.addStudent(student);
+                }
+
+                // Klassen erneut speichern für die Beziehungen
+                classRepository.saveAll(Arrays.asList(math9A, deutsch9A, englisch9A, geschichte9A, biologie9B, sport9AB));
+            }
+
+            System.out.println("Created 6 test classes with student assignments.");
+        } catch (Exception e) {
+            System.err.println("Error creating test classes: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
