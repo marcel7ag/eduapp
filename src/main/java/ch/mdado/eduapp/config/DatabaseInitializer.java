@@ -334,7 +334,7 @@ public class DatabaseInitializer implements CommandLineRunner {
             russian9B.setSemesterEnd(semesterEnd);
 
             // WICHTIG: Erst die Klassen ohne Schüler speichern
-            List<Class> allClasses = Arrays.asList(math9A, deutsch9A, englisch9A, geschichte9A, biologie9B, sport9AB);
+            List<Class> allClasses = Arrays.asList(math9A, deutsch9A, englisch9A, geschichte9A, biologie9B, sport9AB, italian9A, italian9B, russian9AB, russian9B);
             classRepository.saveAll(allClasses);
 
             System.out.println("Classes saved, now assigning students...");
