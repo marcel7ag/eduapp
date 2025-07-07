@@ -4,42 +4,70 @@ import ch.mdado.eduapp.models.Class;
 import ch.mdado.eduapp.repositories.ClassRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class ClassService {
 
     @Autowired
     private ClassRepository classRepository;
 
+    @Transactional(readOnly = true)
     public List<Class> findAll() {
-        return classRepository.findAll();
+        List<Class> classes = classRepository.findAll();
+        // Force loading of students
+        classes.forEach(c -> c.getStudents().size());
+        return classes;
     }
 
+    @Transactional(readOnly = true)
     public Class findById(Integer id) {
-        return classRepository.findById(id)
+        Class classEntity = classRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Class not found with ID: " + id));
+
+        // Force loading of students and teacher
+        classEntity.getStudents().size();
+        classEntity.getTeacher().getName();
+
+        return classEntity;
     }
 
+    @Transactional(readOnly = true)
     public List<Class> findByTeacherId(Integer teacherId) {
-        return classRepository.findByTeacherId(teacherId);
+        List<Class> classes = classRepository.findByTeacherId(teacherId);
+        classes.forEach(c -> c.getStudents().size());
+        return classes;
     }
 
+    @Transactional(readOnly = true)
     public List<Class> findByStudentId(Integer studentId) {
-        return classRepository.findClassesByStudentId(studentId);
+        List<Class> classes = classRepository.findClassesByStudentId(studentId);
+        classes.forEach(c -> c.getStudents().size());
+        return classes;
     }
 
+    @Transactional(readOnly = true)
     public List<Class> findBySubjectName(String subjectName) {
-        return classRepository.findBySubjectName(subjectName);
+        List<Class> classes = classRepository.findBySubjectName(subjectName);
+        classes.forEach(c -> c.getStudents().size());
+        return classes;
     }
 
+    @Transactional(readOnly = true)
     public List<Class> findActiveClasses() {
-        return classRepository.findByIsActiveTrue();
+        List<Class> classes = classRepository.findByIsActiveTrue();
+        classes.forEach(c -> c.getStudents().size());
+        return classes;
     }
 
+    @Transactional(readOnly = true)
     public List<Class> findByDayOfWeek(Integer dayOfWeek) {
-        return classRepository.findByDayOfWeek(dayOfWeek);
+        List<Class> classes = classRepository.findByDayOfWeek(dayOfWeek);
+        classes.forEach(c -> c.getStudents().size());
+        return classes;
     }
 
     public Class save(Class classEntity) {

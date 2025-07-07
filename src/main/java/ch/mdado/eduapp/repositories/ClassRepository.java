@@ -9,27 +9,50 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ClassRepository extends JpaRepository<Class, Integer> {
 
     @Transactional
-    List<Class> findByTeacherId(Integer teacherId);
+    @Query("SELECT c FROM Class c LEFT JOIN FETCH c.students LEFT JOIN FETCH c.teacher")
+    List<Class> findAll();
 
     @Transactional
-    List<Class> findBySubjectName(String subjectName);
+    @Query("SELECT c FROM Class c LEFT JOIN FETCH c.students LEFT JOIN FETCH c.teacher WHERE c.id = :id")
+    Optional<Class> findById(@Param("id") Integer id);
 
     @Transactional
+    @Query("SELECT c FROM Class c LEFT JOIN FETCH c.students LEFT JOIN FETCH c.teacher WHERE c.teacher.id = :teacherId")
+    List<Class> findByTeacherId(@Param("teacherId") Integer teacherId);
+
+    @Transactional
+    @Query("SELECT c FROM Class c LEFT JOIN FETCH c.students LEFT JOIN FETCH c.teacher WHERE c.subjectName = :subjectName")
+    List<Class> findBySubjectName(@Param("subjectName") String subjectName);
+
+    @Transactional
+    @Query("SELECT c FROM Class c LEFT JOIN FETCH c.students LEFT JOIN FETCH c.teacher WHERE c.isActive = true")
     List<Class> findByIsActiveTrue();
 
     @Transactional
-    List<Class> findByDayOfWeek(Integer dayOfWeek);
+    @Query("SELECT c FROM Class c LEFT JOIN FETCH c.students LEFT JOIN FETCH c.teacher WHERE c.dayOfWeek = :dayOfWeek")
+    List<Class> findByDayOfWeek(@Param("dayOfWeek") Integer dayOfWeek);
 
     @Transactional
-    @Query("SELECT c FROM Class c WHERE c.teacher = :teacher AND c.isActive = true")
+    @Query("SELECT c FROM Class c LEFT JOIN FETCH c.students LEFT JOIN FETCH c.teacher WHERE c.teacher = :teacher AND c.isActive = true")
     List<Class> findActiveClassesByTeacher(@Param("teacher") Teacher teacher);
 
     @Transactional
-    @Query("SELECT c FROM Class c JOIN c.students s WHERE s.id = :studentId")
+    @Query("SELECT c FROM Class c LEFT JOIN FETCH c.students s LEFT JOIN FETCH c.teacher WHERE s.id = :studentId")
     List<Class> findClassesByStudentId(@Param("studentId") Integer studentId);
+
+    // Zusätzliche Abfrage um die Beziehungen zu überprüfen
+    @Transactional
+    @Query("SELECT COUNT(s) FROM Class c JOIN c.students s WHERE c.id = :classId")
+    Long countStudentsInClass(@Param("classId") Integer classId);
+
+    // Debug-Abfrage
+    @Transactional
+    @Query("SELECT c.id, c.className, c.subjectName, COUNT(s) FROM Class c LEFT JOIN c.students s GROUP BY c.id, c.className, c.subjectName")
+    List<Object[]> findClassesWithStudentCount();
 }

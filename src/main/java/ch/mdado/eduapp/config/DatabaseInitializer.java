@@ -6,13 +6,16 @@ import ch.mdado.eduapp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @Component
+@Transactional
 public class DatabaseInitializer implements CommandLineRunner {
 
     @Autowired
@@ -126,11 +129,17 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     private void createTestClasses() {
         try {
-            var teachers = teacherRepository.findAll();
-            var students = studentRepository.findAll();
+            // Frisch aus der Datenbank laden
+            List<Teacher> teachers = teacherRepository.findAll();
+            List<Student> students = studentRepository.findAll();
 
             if (teachers.isEmpty()) {
                 System.err.println("No teachers found for creating classes.");
+                return;
+            }
+
+            if (students.isEmpty()) {
+                System.err.println("No students found for creating classes.");
                 return;
             }
 
@@ -221,40 +230,53 @@ public class DatabaseInitializer implements CommandLineRunner {
             sport9AB.setSemesterStart(semesterStart);
             sport9AB.setSemesterEnd(semesterEnd);
 
-            // Klassen speichern
-            classRepository.saveAll(Arrays.asList(math9A, deutsch9A, englisch9A, geschichte9A, biologie9B, sport9AB));
+            // WICHTIG: Erst die Klassen ohne Schüler speichern
+            List<Class> allClasses = Arrays.asList(math9A, deutsch9A, englisch9A, geschichte9A, biologie9B, sport9AB);
+            classRepository.saveAll(allClasses);
 
-            // Schüler zu Klassen zuordnen
+            System.out.println("Classes saved, now assigning students...");
+
+            // Jetzt die Schüler-Zuordnungen
             if (students.size() >= 6) {
-                // Erste 3 Schüler zu 9A
-                math9A.addStudent(students.get(0));
-                math9A.addStudent(students.get(1));
-                math9A.addStudent(students.get(2));
+                // Erste 3 Schüler zu 9A-Klassen
+                List<Student> class9AStudents = students.subList(0, 3);
+                for (Student student : class9AStudents) {
+                    math9A.addStudent(student);
+                    deutsch9A.addStudent(student);
+                    englisch9A.addStudent(student);
+                    geschichte9A.addStudent(student);
+                    System.out.println("Added student " + student.getName() + " to 9A classes");
+                }
 
-                deutsch9A.addStudent(students.get(0));
-                deutsch9A.addStudent(students.get(1));
-                deutsch9A.addStudent(students.get(2));
-
-                englisch9A.addStudent(students.get(0));
-                englisch9A.addStudent(students.get(1));
-                englisch9A.addStudent(students.get(2));
-
-                geschichte9A.addStudent(students.get(0));
-                geschichte9A.addStudent(students.get(1));
-                geschichte9A.addStudent(students.get(2));
-
-                // Letzte 3 Schüler zu 9B
-                biologie9B.addStudent(students.get(3));
-                biologie9B.addStudent(students.get(4));
-                biologie9B.addStudent(students.get(5));
+                // Letzte 3 Schüler zu 9B-Klassen
+                List<Student> class9BStudents = students.subList(3, 6);
+                for (Student student : class9BStudents) {
+                    biologie9B.addStudent(student);
+                    System.out.println("Added student " + student.getName() + " to 9B classes");
+                }
 
                 // Alle Schüler zu Sport
                 for (Student student : students) {
                     sport9AB.addStudent(student);
+                    System.out.println("Added student " + student.getName() + " to Sport");
                 }
 
-                // Klassen erneut speichern für die Beziehungen
-                classRepository.saveAll(Arrays.asList(math9A, deutsch9A, englisch9A, geschichte9A, biologie9B, sport9AB));
+                // Schüler-Zuordnungen speichern
+                studentRepository.saveAll(students);
+
+                // Klassen mit Schüler-Zuordnungen erneut speichern
+                classRepository.saveAll(allClasses);
+
+                System.out.println("Student assignments completed and saved.");
+            }
+
+            // Verification
+            for (Class c : allClasses) {
+                Class reloaded = classRepository.findById(c.getId()).orElse(null);
+                if (reloaded != null) {
+                    System.out.println("Class " + c.getClassName() + " - " + c.getSubjectName() +
+                            " has " + reloaded.getStudents().size() + " students");
+                }
             }
 
             System.out.println("Created 6 test classes with student assignments.");
